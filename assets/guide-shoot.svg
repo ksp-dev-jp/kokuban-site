@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="280" viewBox="0 0 400 280" role="img" aria-labelledby="title desc">
+  <title id="title">内容を選んで、黒板付きの写真を撮る</title>
+  <desc id="desc">黒板をタップして工事A、施工前、測点１を選び、「黒板に反映」を押してから撮影します。</desc>
+  <style>text{font-family:'BIZ UDPGothic','Yu Gothic UI',Meiryo,sans-serif}.label{font-size:12px;font-weight:bold;fill:#244332}.chalk{font-size:11px;fill:#fff}</style>
+  <rect width="400" height="280" rx="12" fill="#edf3ef"/>
+  <circle cx="325" cy="61" r="40" fill="#dcebe1"/>
+  <text x="26" y="32" class="label">黒板をタップ → 入力 →「黒板に反映」</text>
+  <path d="M135 39v19" fill="none" stroke="#1b6b3f" stroke-width="2"/>
+  <rect x="21" y="62" width="358" height="166" rx="18" fill="#273e33"/>
+  <rect x="30" y="71" width="300" height="148" rx="9" fill="#cfe3ea"/>
+  <path d="M30 127 111 94l81 39 69-29 69 24v91H30z" fill="#aec6ab"/>
+  <path d="M30 165h300v54H30z" fill="#cfccba"/>
+  <path d="M191 165h20l68 54H129z" fill="#949b91"/>
+  <path d="m201 170 2 10m5 10 10 22" stroke="#f3f0df" stroke-width="3"/>
+  <path d="M248 111h43v51h-43zM242 111l28-19 27 19z" fill="#e5e3d6" stroke="#758b76" stroke-width="2"/>
+  <path d="M258 124h9v12h-9zM275 124h9v12h-9z" fill="#9cbbbd"/>
+  <path d="M301 164v-20m-4 7h8" stroke="#ebaa57" stroke-width="5"/>
+  <rect x="42" y="118" width="128" height="84" rx="3" fill="#14532d" stroke="#0c3a1f" stroke-width="4"/>
+  <path d="M48 125h116v70H48zM48 148h116M48 172h116M94 125v70" fill="none" stroke="#b9d2c0"/>
+  <g class="chalk"><text x="51" y="140">工事名</text><text x="103" y="140">工事A</text><text x="57" y="164">工種</text><text x="103" y="164" fill="#f2d675">施工前</text><text x="57" y="188">測点</text><text x="117" y="188" fill="#f2d675">１</text></g>
+  <circle cx="354" cy="145" r="20" fill="#fff"/><circle cx="354" cy="145" r="15" fill="none" stroke="#8ca795" stroke-width="2"/>
+  <circle cx="159" cy="157" r="12" fill="none" stroke="#f2d675" stroke-width="2"/>
+  <path d="m171 193-17-28q-3-5 1-7 4-2 7 2l9 14 2-10q1-4 5-2l17 8q6 3 5 10l-2 17z" fill="#f4d5ad" stroke="#947047" stroke-width="1.5"/>
+  <path d="M354 234v17m-5-7 5 7 5-7" fill="none" stroke="#1b6b3f" stroke-width="2"/>
+  <text x="331" y="270" text-anchor="end" class="label">シャッター → 写真を保存</text>
+  <rect x="35" y="237" width="165" height="28" rx="14" fill="#d2e6d9"/>
+  <text x="117" y="255" text-anchor="middle" font-size="12" fill="#1b6b3f">工事A ／ 施工前 ／ 測点１</text>
+</svg>

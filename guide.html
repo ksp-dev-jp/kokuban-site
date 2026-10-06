@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
+<meta name="description" content="サッと黒板の使い方。黒板の作成、入力用CSVの準備とスマホへの取り込み、撮影、写真DL・一覧表DLまでを順番に説明します。">
 <title>サッと黒板 使い方ガイド</title>
 <style>
   :root {
@@ -140,19 +139,33 @@
   .board-caption { font-size: 12px; color: var(--muted); margin-top: 8px; text-align: right; }
 
   /* ---------- 全体の流れ ---------- */
-  .flow { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; counter-reset: flow; }
-  .flow li {
-    counter-increment: flow;
-    flex: 1 1 150px;
+  .flow { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 28px; }
+  .flow > li {
+    position: relative;
     background: var(--surface);
     border: 1px solid var(--rule);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 14px;
-    line-height: 1.6;
+    border-radius: 16px;
+    padding: 22px;
+    display: grid;
+    gap: 18px;
+    min-width: 0;
   }
-  .flow li::before { content: counter(flow); display: block; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 13px; }
-  .flow b { display: block; font-size: 15px; }
+  .flow > li + li::before { content: "↓"; position: absolute; top: -28px; left: calc(50% - 12px); color: var(--accent); font-size: 22px; line-height: 26px; }
+  .flow h4 { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; font-size: 22px; line-height: 1.4; margin: 0 !important; }
+  .flow-number { display: grid; place-items: center; flex: 0 0 34px; height: 34px; border-radius: 50%; color: var(--board-ink); background: var(--board); font-size: 19px; }
+  .flow figure { margin: 0; min-width: 0; }
+  .flow img { display: block; width: 100%; height: auto; border-radius: 12px; background: #EDF3EF; }
+  .flow figcaption { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+  .flow-copy { min-width: 0; font-size: 15px; line-height: 1.8; }
+  .flow-goal { font-size: 17px; font-weight: 700; margin: 0 0 10px; }
+  .flow-actions { padding-left: 1.4em; margin: 0 0 12px; }
+  .flow-actions li { margin-bottom: 8px; padding-left: 2px; }
+  .flow-result { padding: 9px 12px; margin: 0; background: var(--accent-soft); border-radius: 8px; }
+  .flow-result strong { color: var(--accent); }
+  .flow-alternate { margin: 10px 0 0; color: var(--muted); font-size: 14px; }
+  .flow-detail { display: inline-block; margin-top: 10px; font-size: 14px; }
+  @media (min-width: 760px) { .flow > li { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+  @media (max-width: 420px) { .flow > li { padding: 16px; } .flow h4 { font-size: 20px; } }
   .device { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); vertical-align: 2px; }
 
   /* ---------- 本文 ---------- */
@@ -244,12 +257,15 @@
 
   footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 13px; max-width: 46em; }
 </style>
+</head>
+<body>
 
 <div class="wrap">
   <nav class="toc" aria-label="目次">
     <h2>目次</h2>
     <ol>
       <li><a href="#flow">全体の流れ</a></li>
+      <li><a href="#file-types">ファイルの役割</a></li>
     </ol>
     <p class="part"><span class="device">PC</span>PC エディタ</p>
     <ol>
@@ -267,10 +283,13 @@
     <ol>
       <li><a href="#app-project">工事を作る</a></li>
       <li><a href="#app-template">黒板を取り込んで選ぶ</a></li>
+      <li><a href="#app-csv">入力用CSVを黒板に取り込む</a></li>
       <li><a href="#app-items">撮影項目を入れる</a></li>
       <li><a href="#app-shoot">撮影する</a></li>
       <li><a href="#app-date">日時の記録</a></li>
-      <li><a href="#app-export">写真の整理と書き出し</a></li>
+      <li><a href="#app-export">写真と一覧表を保存する</a></li>
+      <li><a href="#app-photo-dl">写真DLの手順</a></li>
+      <li><a href="#app-index-dl">一覧表DLの手順</a></li>
       <li><a href="#app-backup">バックアップ</a></li>
       <li><a href="#app-settings">設定と購入</a></li>
     </ol>
@@ -283,9 +302,10 @@
     <header class="hero">
       <div>
         <p class="kicker">使い方ガイド</p>
-        <h1>サッと黒板で、黒板を作って撮るまで</h1>
-        <p>黒板の見た目は「PC エディタ」かアプリの中で作り、撮影はスマホアプリで行います。どちらも同じ描画処理なので、画面で作った黒板がそのまま写真に写ります。</p>
-        <p class="sub">電波の届かない現場でも、撮影・黒板の編集・書き出しはすべてスマホの中で完結します。</p>
+        <h1>黒板を準備して、撮影・保存する</h1>
+        <p>黒板の見た目はPC エディタかスマホで作り、工種や測点などの候補をCSVから取り込めます。撮影後は<span class="ui">写真DL</span>と<span class="ui">一覧表DL</span>で、必要なものをそれぞれ保存します。</p>
+        <p class="sub">写真はJPEG、一覧表はExcelまたはCSVで保存します。撮影・黒板の編集・保存は、電波の届かない現場でもスマホの中で完結します。</p>
+        <p class="sub">このガイドは「写真DL」「一覧表DL」がある版の操作を説明しています。旧版をお使いの場合は、アプリ更新後にご利用ください。</p>
       </div>
       <figure style="margin:0">
         <div class="board" role="img" aria-label="黒板の見本。業務名 水質調査業務、地点名 丸1、時間 10時30分、年月日 2026年9月14日、施工業者 サンプル建設">
@@ -303,15 +323,84 @@
 
     <section class="topic" id="flow" style="max-width:none">
       <h3>全体の流れ</h3>
-      <p>パソコンで黒板を作る場合の手順です。アプリの中だけで作る場合は、2〜4 を飛ばせます。</p>
+      <p>まず黒板の形を作り、次に書く内容を登録し、現場で撮影します。ここでは「工事A・施工前・測点１」を例に、写真の保存まで説明します。</p>
+      <p class="flow-alternate">撮影には、サッと黒板アプリを入れたAndroidスマホを使います。図は操作のイメージです。すでにある黒板を使う場合は①の作成を省略でき、内容をその場で入力する場合は②のCSV準備を省略できます。</p>
       <ol class="flow">
-        <li><span class="device">PC</span><b>黒板を作る</b>PC エディタで作って「保存」</li>
-        <li><span class="device">PC</span><b>ファイルに保存</b>.json ファイルができる</li>
-        <li><b>スマホへ送る</b>メール・Google ドライブ・USB など</li>
-        <li><span class="device">スマホ</span><b>取り込む</b>「テンプレート」から JSON を取り込む</li>
-        <li><span class="device">スマホ</span><b>工事で選ぶ</b>工事の設定で黒板を選ぶ</li>
-        <li><span class="device">スマホ</span><b>撮影・書き出し</b>黒板つきで撮り、まとめて出す</li>
+        <li>
+          <h4><span class="flow-number">1</span><span>黒板を作る</span></h4>
+          <figure>
+            <img src="assets/guide-create.svg" width="400" height="280" alt="PCのエディタで、工事名・工種・測点の欄がある空欄の黒板を作成。保存したJSONをスマホへ渡す図。">
+            <figcaption>項目と配置を決めます。工事名や日時などは、工事の情報・撮影時刻から自動で入れる設定もできます。</figcaption>
+          </figure>
+          <div class="flow-copy">
+            <p class="flow-goal">写真に写す黒板のひな形を用意する</p>
+            <ol class="flow-actions">
+              <li><a href="https://ksp-dev-jp.github.io/kokuban-site/editor/" target="_blank" rel="noopener">PC版エディタを開く</a>→<span class="ui">新規作成</span>→下の道具箱の<span class="ui">行で作る</span>を押します。</li>
+              <li>「工事名・工種・細別・測点・受注者」などを並べ、「入る値」が対応する項目になっていることを確認。<span class="ui">黒板に置く</span>→右上の<span class="ui">保存</span>を押します。</li>
+              <li>テンプレート一覧の<span class="ui">ファイルに保存</span>でJSONを保存。メールやGoogle ドライブなどでスマホへ送り、端末に保存します。</li>
+              <li>スマホの「工事一覧」右上「テンプレート」→右上の<span class="ui">JSON を取り込む</span>で、そのファイルを選びます。</li>
+            </ol>
+            <p class="flow-result"><strong>ここまでで：</strong>スマホで使える黒板のひな形ができます。</p>
+            <p class="flow-alternate">スマホだけでも作れます。「工事一覧」右上「テンプレート」→「新規作成」から、同じように項目を並べ、「黒板に置く」→「保存」を押します。</p>
+            <a class="flow-detail" href="#pc-rows">黒板を作る詳しい手順 →</a>
+          </div>
+        </li>
+        <li>
+          <h4><span class="flow-number">2</span><span>記載情報を登録する</span></h4>
+          <figure>
+            <img src="assets/guide-register.svg" width="400" height="280" alt="入力用CSVの1行目に工事名・工種・測点、2行目から工事A・施工前・１などの候補を入力。スマホの黒板へ取り込み、選べるようにする図。">
+            <figcaption>CSVの1行が、撮影時に選べる内容の組み合わせになります。</figcaption>
+          </figure>
+          <div class="flow-copy">
+            <p class="flow-goal">黒板に書く内容を、まとめて用意する</p>
+            <ol class="flow-actions">
+              <li>PCのテンプレート一覧で<span class="ui">CSVひな形</span>を保存。CSVを編集できる表計算ソフトで開き、1行目は項目名のまま、2行目から1行につき1組の値を入力し、CSV形式で保存します。</li>
+              <li>記入済みCSVをスマホへ送り、端末に保存します。</li>
+              <li>スマホの「工事一覧」右上「テンプレート」で使う黒板を「編集」。下の道具箱を右端まで送り、<span class="ui">入力欄・Excel</span>→<span class="ui">表を取り込む（Excel / CSV）</span>でCSVを選びます。表がある場合は「取り込み直す」を押します。</li>
+              <li>「1行目は見出し」「列ごとに『選ぶ項目』を作る」をオンにし、<span class="ui">取り込む</span>→<span class="ui">決定</span>→右上の<span class="ui">保存</span>を押します。</li>
+            </ol>
+            <p class="flow-result"><strong>ここまでで：</strong>工種や測点を、候補から選べるようになります。</p>
+            <p class="flow-alternate">CSVは任意です。件数が少なければ③で黒板をタップして直接入力できます。撮影日時・連番は自動で入ります。CSVの候補は黒板に保存され、同じ黒板を使う他の工事でも共有されます。</p>
+            <a class="flow-detail" href="#app-csv">CSVを取り込む詳しい手順 →</a>
+          </div>
+        </li>
+        <li>
+          <h4><span class="flow-number">3</span><span>撮影する</span></h4>
+          <figure>
+            <img src="assets/guide-shoot.svg" width="400" height="280" alt="現場にスマホを向け、画面上の黒板をタップして工事A・施工前・測点１を選ぶ。シャッターを押すと、黒板が入った写真が保存される図。">
+            <figcaption>選んだ内容が黒板に入り、現場の写真と一緒に写ります。</figcaption>
+          </figure>
+          <div class="flow-copy">
+            <p class="flow-goal">現場で内容を選んで、シャッターを押す</p>
+            <ol class="flow-actions">
+              <li>「工事一覧」で<span class="ui">工事を追加</span>→工事名「工事A」を入力→<span class="ui">工事を作成して始める</span>。工事の右上「設定」→「黒板」で用意した黒板を選び、工事画面へ戻ります。</li>
+              <li>工事画面の<span class="ui">そのまま撮影</span>を押します。初回はカメラの使用を許可し、撮影種別を「黒板つき」にします。</li>
+              <li>黒板をタップし、工事名→工種→細別→測点など、上から順に候補を選ぶか直接入力。<span class="ui">黒板に反映</span>を押して、画面に入った内容を確認します。</li>
+              <li>写真を施工前・施工後に分類する場合は、撮影画面の<span class="ui">施工前</span>／<span class="ui">施工後</span>も選びます。黒板に「施工前」と入力する操作とは別の設定です。</li>
+              <li>黒板をなぞって移動し、四隅をつまんで大きさを調整して、シャッターを押します。通常は自動保存。撮影後の確認をオンにしている場合は<span class="ui">採用</span>を押して保存します。</li>
+            </ol>
+            <p class="flow-result"><strong>できあがり：</strong>記載情報が入った黒板付きの写真が、アプリに保存されます。</p>
+            <p class="flow-alternate">次の場所では、黒板をタップして測点などを変え、「黒板に反映」→撮影を繰り返します。工事画面の「写真」タブで、保存された写真を確認できます。</p>
+            <a class="flow-detail" href="#app-shoot">撮影する詳しい手順 →</a>
+          </div>
+        </li>
       </ol>
+      <div class="tip"><strong>撮影後、写真を取り出すには</strong>撮影画面から工事画面へ戻り、「写真」タブを開きます。<span class="ui">写真DL（○枚）</span>で表示中の写真をJPEGとして端末の「Pictures」→「工事写真」に保存できます。<span class="ui">一覧表DL</span>ではExcelまたはCSVを選び、端末の保存画面で保存先を指定します。どちらもZIPにまとめません。<a href="#app-export">詳しい保存手順 →</a></div>
+    </section>
+
+    <section class="topic" id="file-types">
+      <h3>ファイルの役割を確認する</h3>
+      <div class="scroll">
+        <table class="ref">
+          <thead><tr><th>ファイル</th><th>使う場面</th><th>中身・保存先</th></tr></thead>
+          <tbody>
+            <tr><td>黒板の .json</td><td>PCで作った黒板をスマホへ渡す</td><td>黒板の見た目と設定。取り込み済みの候補表も含みます。「黒板テンプレート」画面で取り込みます。</td></tr>
+            <tr><td>入力用 .csv</td><td>撮影前に入力候補を準備する</td><td>1行目は黒板の項目名、2行目から候補の組み合わせ。対象の黒板の「入力欄・Excel」で取り込みます。</td></tr>
+            <tr><td>写真の .JPG</td><td>撮影した写真を保存・受け渡しする</td><td>黒板を写し込んだ写真。「写真DL」で端末の写真フォルダ「工事写真」へ保存します。</td></tr>
+            <tr><td>写真一覧 .csv / .xlsx</td><td>撮影後に写真の記録を確認・利用する</td><td>写真1枚につき1行の一覧。「一覧表DL」で形式を選び、保存先を指定します。</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- ================= PC エディタ ================= -->
@@ -339,7 +428,7 @@
       </div>
       <div class="note">
         <strong>作った黒板は、そのパソコンのそのブラウザの中にだけ保存されます</strong>
-        どこにも送信されませんが、別のパソコンやブラウザには引き継がれず、ブラウザの閲覧データを消すと一緒に消えます。大事な黒板は<span class="ui">ファイルに保存</span>で手元にも残してください。プライベートブラウズでは保存できません。
+        別のパソコンやブラウザには引き継がれず、ブラウザの閲覧データを消すと一緒に消えます。大事な黒板は<span class="ui">ファイルに保存</span>で手元にも残してください。「このブラウザに保存できませんでした」と表示されたときも、ページを閉じる前にファイルへ保存してください。
       </div>
     </section>
 
@@ -348,12 +437,28 @@
       <ol class="steps">
         <li>黒板に「工事名」「工種」「種別」「細別」「測点」などの差し込み項目を置き、<span class="ui">保存</span>する</li>
         <li>テンプレート一覧の<span class="ui">CSVひな形</span>を押す。1行目が項目名のCSVがダウンロードされる</li>
-        <li>Excelなどで開き、2行目から1行につき1組の値を入力して、CSVとして保存する</li>
-        <li>テンプレートを<span class="ui">編集</span>し、<span class="ui">入力欄・Excel</span> → <span class="ui">表を取り込む（Excel / CSV）</span>から記入済みCSVを選ぶ</li>
-        <li>「1行目は見出し」と「列ごとに「選ぶ項目」を作る」をオンにして取り込み、<span class="ui">決定</span> → <span class="ui">保存</span>する</li>
+        <li>CSVを編集できる表計算ソフトで開き、2行目から1行につき1組の値を入力して、CSVとして保存する
+          <p>Excelがなくても、CSVに対応した表計算ソフトで編集できます。1行目の項目名と並び順はそのままにします。</p></li>
+        <li>記入済みCSVをメール・Google ドライブ・USBなどでスマホへ送り、端末に保存する</li>
+        <li>スマホで対象の黒板に取り込む（<a href="#app-csv">入力用CSVを黒板に取り込む</a>）</li>
       </ol>
+      <h4>入力例：横に項目、縦に候補を並べる</h4>
+      <p>列は項目ごとに使い、行は候補ごとに増やします。たとえば、この表の2〜6行目には5組の候補があります。実際の項目名は、作った黒板に合わせて変わります。</p>
+      <div class="scroll">
+        <table class="sheet" aria-label="入力用CSVの例。1行目に項目名、2行目から5組の候補">
+          <thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1</th><td class="head">工事名</td><td class="head">工種</td><td class="head">種別</td><td class="head">細別</td><td class="head">測点</td><td class="head">受注者</td></tr>
+            <tr><th scope="row">2</th><td>工事A</td><td>施工前</td><td></td><td>A</td><td>１</td><td>○○建設株式会社</td></tr>
+            <tr><th scope="row">3</th><td>工事A</td><td>施工前</td><td></td><td>B</td><td>２</td><td>○○建設株式会社</td></tr>
+            <tr><th scope="row">4</th><td>工事A</td><td>施工後</td><td></td><td>C</td><td>３</td><td>○○建設株式会社</td></tr>
+            <tr><th scope="row">5</th><td>工事A</td><td>施工後</td><td></td><td>D</td><td>４</td><td>○○建設株式会社</td></tr>
+            <tr><th scope="row">6</th><td>工事A</td><td>施工後</td><td></td><td>E</td><td>５</td><td>○○建設株式会社</td></tr>
+          </tbody>
+        </table>
+      </div>
       <p>撮影時は1行目の項目名が入力欄になり、上から順に値を選べます。CSVの行は組み合わせの候補です。撮影日時・連番はアプリが自動で入れるため、ひな形の列には含まれません。</p>
-      <div class="note"><strong>CSVとJSONは用途が違います。</strong>CSVは入力候補の表です。スマホへ黒板全体を渡すときは、CSVを取り込んでから<span class="ui">ファイルに保存</span>でJSONを書き出し、アプリに取り込んでください。</div>
+      <div class="tip"><strong>PCで候補まで設定してから渡す方法</strong>PCエディタでも、対象の黒板を<span class="ui">編集</span> → <span class="ui">入力欄・Excel</span> → <span class="ui">表を取り込む（Excel / CSV）</span>でCSVを取り込めます。「1行目は見出し」と「列ごとに『選ぶ項目』を作る」をオンにし、<span class="ui">取り込む</span> → <span class="ui">決定</span> → <span class="ui">保存</span>。そのあとJSONを<span class="ui">ファイルに保存</span>すると、候補表も一緒にスマホへ渡せます。</div>
     </section>
 
     <section class="topic" id="pc-rows">
@@ -533,9 +638,26 @@
       </ol>
     </section>
 
+    <section class="topic" id="app-csv">
+      <h3>入力用CSVをスマホの黒板に取り込む</h3>
+      <p>スマホに保存した記入済みCSVを、使う黒板テンプレートの入力候補にします。PCで作った黒板へ取り込む場合は、先にその黒板のJSONを取り込んでおきます。</p>
+      <ol class="steps">
+        <li>工事一覧の右上「テンプレート」から「黒板テンプレート」を開く</li>
+        <li>使う黒板のメニューから<span class="ui">編集</span>を選ぶ</li>
+        <li>下の道具箱を右端まで送り、<span class="ui">入力欄・Excel</span> → <span class="ui">表を取り込む（Excel / CSV）</span>を押す
+          <p>候補表がすでに入っている場合は<span class="ui">取り込み直す</span>と表示されます。</p></li>
+        <li>スマホに保存した入力用CSVを選ぶ</li>
+        <li>確認画面で「1行目は見出し」と「列ごとに『選ぶ項目』を作る」をオンにし、項目名と候補の行数を確かめて<span class="ui">取り込む</span>を押す</li>
+        <li><span class="ui">決定</span> → エディタ右上の<span class="ui">保存</span>を押す</li>
+      </ol>
+      <p>工事の設定でその黒板を選ぶと、撮影時にCSVの候補を選べます。上の項目で選んだ値に合わせて、下の項目の候補が絞られます。上の例では、工種に「施工前」を選ぶと、細別は「A」「B」、測点はその細別に対応するものから選べます。</p>
+      <div class="tip"><strong>黒板ごとに候補を持ちます</strong>取り込んだ候補表は黒板テンプレートに保存されます。工事が変わっても同じ黒板を選べば、その候補表を使えます。</div>
+    </section>
+
     <section class="topic" id="app-items">
       <h3>撮影項目を入れる</h3>
       <p>工種や測点などの撮影項目を用意しておくと、撮影時に一覧から選べ、まだ撮っていない項目の数もわかります。</p>
+      <p>ここでは工事の「何を撮るか」の一覧を作ります。黒板に入力する候補を設定するときは、<a href="#app-csv">入力用CSVを黒板に取り込む</a>の手順を使います。</p>
       <ul class="plain">
         <li><strong>Excel でまとめて入れる</strong>：工事の画面の「撮影項目」タブで<span class="ui">Excel／CSV を取り込む</span>。見出しは「写真区分・工種・種別・細別・測点」を読み取ります。記入用の Excel を配ることもできます。</li>
         <li><strong>取り込み直す</strong>：追加・更新・削除・変更なしの件数を確かめてから反映します。</li>
@@ -546,12 +668,15 @@
     <section class="topic" id="app-shoot">
       <h3>撮影する</h3>
       <ol class="steps">
-        <li>工事一覧の<span class="ui">撮影する</span>、または工事の画面から撮影画面を開く</li>
-        <li>撮影項目を選ぶ
-          <p>「工種・測点で探す」で絞れます。決めていなければ<span class="ui">項目なしで撮る</span>（あとから写真一覧で結びつけられます）。</p></li>
-        <li>黒板の入力欄を埋める
-          <p>Excel の表を取り込んだ黒板なら、業務名 → 地点名の順に選びます。</p></li>
-        <li>シャッターを押し、確認画面で<span class="ui">採用</span>/<span class="ui">撮り直す</span>/<span class="ui">破棄</span>を選ぶ
+        <li>工事一覧の<span class="ui">撮影する</span>、または工事画面の<span class="ui">そのまま撮影</span>を押す。撮影項目の登録なしで始められます
+          <p>撮影項目を登録済みなら、その項目を押して撮影画面を開くこともできます。撮影画面の項目欄を押すと、別の項目や<span class="ui">項目なしで撮る</span>を選べます。</p></li>
+        <li>撮影種別を<span class="ui">黒板つき</span>にする。初回にカメラの使用許可を求められたら許可する</li>
+        <li>画面上の黒板をタップして内容を入力・選択する
+          <p>CSVやExcelの候補表を取り込んだ黒板なら、工事名 → 工種 → 細別 → 測点など、上の項目から順に選び、<span class="ui">黒板に反映</span>を押します。CSVの準備を省略した場合は、ここで直接入力できます。</p></li>
+        <li>写真の分類を<span class="ui">通常</span>／<span class="ui">施工前</span>／<span class="ui">施工後</span>から選ぶ
+          <p>この分類は写真一覧の絞り込みに使います。黒板に書く文字とは別に選んでください。</p></li>
+        <li>シャッターを押す
+          <p>通常はそのまま保存して続けて撮影できます。撮影後の確認をオンにしている場合は、確認画面で<span class="ui">採用</span>/<span class="ui">撮り直す</span>/<span class="ui">破棄</span>を選びます。</p>
           <p>続けて撮るときは<span class="ui">次の未撮影</span>で、まだ撮っていない項目へ進めます。</p></li>
       </ol>
       <h4>撮影画面の操作</h4>
@@ -559,6 +684,7 @@
         <table class="ref">
           <thead><tr><th>操作</th><th>内容</th></tr></thead>
           <tbody>
+            <tr><td>黒板の内容を変える</td><td>黒板をタップして、工種・測点などを入力または候補から選び、「黒板に反映」を押す</td></tr>
             <tr><td>黒板を動かす</td><td>黒板をなぞって移動、四隅をつまんで拡大縮小。「黒板の置き方」から<span class="ui">90度回す</span>・<span class="ui">定位置へ寄せる</span>・透け具合</td></tr>
             <tr><td>黒板をどける</td><td>「黒板を一時的にどける」。端のタブで戻せます。写真には写ります</td></tr>
             <tr><td>水準器・グリッド</td><td>傾きの確認と構図合わせ</td></tr>
@@ -573,14 +699,14 @@
 
     <section class="topic" id="app-date">
       <h3>日時の記録</h3>
-      <p>シャッターを切った瞬間の時刻は、どの設定でも写真に記録され、変更できません。そのうえで、黒板に<strong>表示する</strong>日時を工事の設定の「日時の記録」で選びます。</p>
+      <p>シャッターを切った瞬間の端末時計の時刻は、どの設定でも写真に記録され、アプリ内では変更できません。そのうえで、黒板に<strong>表示する</strong>日時を工事の設定の「日時の記録」で選びます。</p>
       <div class="scroll">
         <table class="ref">
           <thead><tr><th>設定</th><th>黒板に出る日時</th></tr></thead>
           <tbody>
             <tr><td>実時刻</td><td>シャッターを切った時刻をそのまま出す</td></tr>
             <tr><td>丸める</td><td>区切りのよい時刻に寄せて出す（何分単位か、四捨五入・切り上げ・切り捨てを選ぶ）</td></tr>
-            <tr><td>日時を指定する</td><td>撮影のたびに指定する</td></tr>
+            <tr><td>日時を指定する</td><td>指定した日時を出す。既定では次の写真にも同じ日時を使います。「撮影のたびに指定する」をオンにすると、1枚ごとに指定し直します。日時の変え忘れに注意してください。</td></tr>
           </tbody>
         </table>
       </div>
@@ -588,13 +714,48 @@
     </section>
 
     <section class="topic" id="app-export">
-      <h3>写真の整理と書き出し</h3>
+      <h3>写真と一覧表を、それぞれ保存する</h3>
+      <p>工事の<span class="ui">写真</span>タブを開きます。上部に<span class="ui">写真DL（○枚）</span>と<span class="ui">一覧表DL</span>が並びます。写真だけ、一覧表だけ、両方のどれでも保存できます。どちらのボタンもZIPにはまとめません。</p>
+      <h4>保存する写真を絞る</h4>
+      <p>検索欄に工種・測点などを入力するか、「絞り込み」で撮影日・撮影項目・日時の記録などを選びます。「施工前」「施工後」の切り替えも使えます。<strong>写真DLと一覧表DLは、どちらもいま一覧に表示されている写真が対象です。</strong>写真DLのボタンに出る枚数を確認してください。</p>
+
+      <h4 id="app-photo-dl">写真DL：JPEGを保存する</h4>
+      <ol class="steps">
+        <li>保存したい写真が一覧に表示されていることを確かめる</li>
+        <li><span class="ui">写真DL（○枚）</span>を押し、保存が終わるまで待つ</li>
+        <li>「○枚を写真フォルダ『工事写真』に保存しました」と出たら、端末の写真アプリで「工事写真」を開く
+          <p>ファイル管理アプリでは、端末内の「Pictures」→「工事写真」からJPEGを確認できます。そこから必要な写真を共有できます。</p></li>
+      </ol>
+      <p>黒板が写し込まれた写真を、JPEGファイルのまま保存します。名前は工事の設定の命名規則を使い、同じ対象の一覧表に載るファイル名と揃えます。アプリ内の写真も引き続き閲覧できます。</p>
+      <p>一部の保存に失敗した場合は、保存できた枚数と失敗した枚数が表示されます。保存できた写真だけが「書き出し済み」になります。</p>
+
+      <h4 id="app-index-dl">一覧表DL：CSVまたはExcelを保存する</h4>
+      <ol class="steps">
+        <li>一覧表に含めたい写真が一覧に表示されていることを確かめる</li>
+        <li><span class="ui">一覧表DL</span>を押す</li>
+        <li><span class="ui">Excel（.xlsx）</span>または<span class="ui">CSV（.csv）</span>を選ぶ</li>
+        <li>端末の保存画面で保存先とファイル名を確認し、保存する
+          <p>例：<code>工事A_写真一覧.xlsx</code> または <code>工事A_写真一覧.csv</code>。保存先はダウンロードフォルダなどを選べます。</p></li>
+      </ol>
+      <p>写真1枚につき1行の一覧です。ファイル名・連番・施工区分・写真区分・工種・種別・細別・測点に加え、表示する撮影日時と実撮影日時、日時のずれ、撮影種別・準拠・画素数・ファイルサイズを記録します。</p>
+      <div class="scroll">
+        <table class="ref">
+          <thead><tr><th>形式</th><th>用途</th><th>表記の扱い</th></tr></thead>
+          <tbody>
+            <tr><td>Excel（.xlsx）</td><td>一覧を開いて確認・編集する</td><td>すべて文字列として保存するため、<code>001</code>などの先頭のゼロや測点の表記を維持できます。</td></tr>
+            <tr><td>CSV（.csv）</td><td>写真管理ソフトなどへ取り込む</td><td>日本語を扱えるUTF-8形式です。開くソフトによっては番号や日付が自動変換されるので、取り込み時に列を文字列として指定してください。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>CSVとExcelに入る項目・値は同じです。必要な形式を1つ選べばよく、両方ほしい場合はもう一度<span class="ui">一覧表DL</span>から別の形式を保存します。</p>
+      <div class="tip"><strong>撮影前と撮影後のCSV</strong>「CSVひな形」で作る入力用CSVは、撮影時に選ぶ候補の表です。「一覧表DL」のCSVは、撮影した写真の記録を確認するための一覧です。</div>
+      <p>一覧表だけを保存した場合や、保存画面をキャンセルした場合は、写真を「書き出し済み」にしません。</p>
+
+      <h4>写真台帳・電子納品・容量を空ける</h4>
       <ul class="plain">
-        <li><strong>絞り込み</strong>：「写真」タブの絞り込みで、撮影した日・撮影種別・撮影項目・日時の記録・「まだ書き出していない写真だけ」を組み合わせます。</li>
-        <li><strong>ZIP で共有</strong>：絞り込んだ写真をまとめて書き出します。</li>
-        <li><strong>写真台帳 PDF</strong>：「写真台帳PDFを作る」。1 回 300 枚までなので、多いときは絞り込んでから作ります。</li>
-        <li><strong>電子納品</strong>：工事の画面右上「電子納品」で点検し、<span class="ui">PHOTO フォルダを書き出す</span>（PHOTO.XML を含む）。ファイル名の規則は工事の設定で決めます。</li>
-        <li><strong>容量を空ける</strong>：「書き出し済みを消す」で、書き出しや納品に含めた写真だけを消せます。</li>
+        <li><strong>写真台帳PDF</strong>：<span class="ui">写真台帳PDF</span>から作成・共有します。1回300枚までなので、多いときは絞り込んでから作ります。</li>
+        <li><strong>電子納品</strong>：工事の画面右上「電子納品」で点検し、<span class="ui">PHOTO フォルダを書き出す</span>を押します。PHOTO.XMLと所定のフォルダ構成を含む専用のZIPを作ります。</li>
+        <li><strong>容量を空ける</strong>：「書き出し済みを消す」で、写真DLなどで書き出し済みになった写真を削除できます。アプリ内から削除する前に、保存先の写真を確認してください。</li>
       </ul>
     </section>
 
@@ -602,8 +763,8 @@
       <h3>バックアップ</h3>
       <p>写真は端末の中にしかありません。端末の故障や紛失に備えて、工事一覧の右上「バックアップ」から定期的に<span class="ui">バックアップを作る</span>を行い、できた ZIP を別の場所（パソコンやクラウド）へ移してください。</p>
       <div class="note">
-        <strong>「バックアップから戻す」は、いま端末にある写真をすべて消してから戻します</strong>
-        元に戻せません。戻したあとは、アプリを一度終了して開き直してください。
+        <strong>「バックアップから戻す」は、アプリ内の工事・黒板・写真をバックアップの内容に置き換えます</strong>
+        アプリ内の現在のデータは元に戻せません。必要なら先に現在のバックアップを作ってください。復元後はアプリを一度終了して開き直してください。
       </div>
     </section>
 
@@ -633,7 +794,7 @@
     </section>
 
     <footer>
-      サッと黒板 使い方ガイド　2026年9月14日版。画面の文言はアプリの更新で変わることがあります。
+      サッと黒板 使い方ガイド　2026年10月2日版。画面の文言はアプリの更新で変わることがあります。
     </footer>
   </main>
 </div>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="280" viewBox="0 0 400 280" role="img" aria-labelledby="title desc">
+  <title id="title">記載情報をCSVから登録する</title>
+  <desc id="desc">1行目は項目名、2行目から候補を入力したCSVを、スマホの黒板へ取り込みます。</desc>
+  <style>text{font-family:'BIZ UDPGothic','Yu Gothic UI',Meiryo,sans-serif}.cell{font-size:12px;fill:#244332}.small{font-size:11px;fill:#50625a}</style>
+  <rect width="400" height="280" rx="12" fill="#edf3ef"/>
+  <circle cx="320" cy="202" r="65" fill="#dcebe1"/>
+  <text x="26" y="29" font-size="13" font-weight="bold" fill="#244332">入力用CSV</text>
+  <rect x="26" y="41" width="228" height="111" rx="6" fill="#fff" stroke="#a9bfb0"/>
+  <path d="M26 47a6 6 0 0 1 6-6h216a6 6 0 0 1 6 6v31H26z" fill="#d2e6d9"/>
+  <path d="M26 78h228M26 115h228M105 41v111M188 41v111" fill="none" stroke="#a9bfb0"/>
+  <g class="cell" text-anchor="middle"><text x="65" y="65" font-weight="bold">工事名</text><text x="146" y="65" font-weight="bold">工種</text><text x="221" y="65" font-weight="bold">測点</text><text x="65" y="102">工事A</text><text x="146" y="102">施工前</text><text x="221" y="102">１</text><text x="65" y="139">工事A</text><text x="146" y="139">施工後</text><text x="221" y="139">２</text></g>
+  <path d="M262 59h13" stroke="#1b6b3f" stroke-width="2"/><text x="281" y="63" font-size="12" fill="#1b6b3f">1行目：項目名</text>
+  <path d="M262 96h13" stroke="#1b6b3f" stroke-width="2"/><text x="281" y="100" font-size="12" fill="#1b6b3f">2行目から：値</text>
+  <text x="29" y="170" class="small">※ 項目は作った黒板に合わせて増やせます</text>
+  <path d="M110 185v28q0 10 10 10h70m-9-7 9 7-9 7" fill="none" stroke="#1b6b3f" stroke-width="2.5"/>
+  <text x="128" y="209" font-size="12" font-weight="bold" fill="#1b6b3f">取り込む</text>
+  <rect x="206" y="186" width="154" height="73" rx="11" fill="#273e33"/>
+  <rect x="213" y="192" width="140" height="61" rx="5" fill="#fff"/>
+  <text x="224" y="207" class="small">黒板の入力候補</text>
+  <rect x="223" y="216" width="120" height="26" rx="5" fill="#e1eee6" stroke="#a9bfb0"/>
+  <text x="231" y="233" class="cell">工種　施工前</text>
+  <path d="m326 227 4 5 4-5" fill="none" stroke="#1b6b3f" stroke-width="2"/>
+  <circle cx="354" cy="251" r="14" fill="#f2d675"/>
+  <path d="m348 251 4 4 8-9" fill="none" stroke="#244332" stroke-width="2.5"/>
+</svg>
